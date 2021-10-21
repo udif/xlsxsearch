@@ -13,10 +13,10 @@ Notes
 
 Query Language
 --------------
-* The search query can be a single word, or a combination of words using and/or operators.
+* The search query can be a single word, or a combination of words using and/or/not operators.
 * Parentheses can also be used to group change the evaluation order.
-* Quotes can be used to search expressions containing white spaces, as well as searching for the words "or", "and" by themselves.
-* and/or can be written in uppercase, lowercase or any case mix.
+* Quotes can be used to search expressions containing white spaces, as well as searching for the words "or", "and", "not" by themselves.
+* and/or/not can be written in uppercase, lowercase or any case mix.
 
 Query examples:
 ---------------
@@ -27,7 +27,8 @@ Query examples:
 |hello AND world|search for both the word 'hello' and the word 'world' (using uppercase AND just to show it works)|
 |hello Or "and"| search for either the word 'hello' or the word 'and' (using mixed case 'Or' to show it works)|
 |"hello world" or goodbye| search for either th phrase 'hello world' or the word 'goodbye'|
-| (alice or bob) and eve| search for both 'eve' and either of 'alice' or 'bob'|
+|(alice or bob) and eve| search for both 'eve' and either of 'alice' or 'bob'|
+|alice and bob and not eve|search for both 'alice' and 'bob' and make sure 'eve' is not found|
  
 Installing
 ----------
