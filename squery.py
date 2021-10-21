@@ -55,9 +55,14 @@ squery_set_keywords(or_keywords, and_keywords, not_keywords)
 # Compile a query, return a query function that accepts a string and returns True or False
 #
 def squery_compile(query):
-    if squery_parser == None:
-        squery_compile_parser()
-    return SQuery_transformer().transform(squery_parser.parse(query))
+    try:
+        if squery_parser == None:
+            squery_compile_parser()
+        parsed = squery_parser.parse(query)
+        #print(parsed.pretty())
+        return SQuery_transformer().transform(parsed)
+    except:
+        return None
 
 # In the future, use one of those:
 # https://github.com/jakerachleff/commentzwalter
@@ -122,8 +127,10 @@ if __name__ == "__main__":
             sys.exit(0)
         print("Enter query:")
         s = input()
-        print(squery_parser.parse(s).pretty())
         query = squery_compile(s)
-        print(query)
-        print(query(text))
+        if query is None:
+            print("Invalid query!")
+        else:
+            #print(query)
+            print(query(text))
 

@@ -143,7 +143,11 @@ while True:
         file_list = gen_file_list(sfolder)
         searchstring = values["-QUERY-"]
         query_func = squery.squery_compile(searchstring)
-        dest_file = os.fspath(Path(dfolder).joinpath("xlsxsearch_" + searchstring + ".xlsx"))
+        if query_func is None:
+            status[2]("Illegal query!")
+            continue
+        filename = searchstring.replace('"', "'")
+        dest_file = os.fspath(Path(dfolder).joinpath("xlsxsearch_" + filename + ".xlsx"))
         try:
             run_search(file_list, searchstring, query_func, dest_file, fix_search, w, status)
         except OSError as err:
