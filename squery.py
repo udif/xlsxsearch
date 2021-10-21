@@ -21,8 +21,8 @@ squery_parser = None
 def squery_compile_parser(or_kw_str=or_kw_str, and_kw_str=and_kw_str, not_kw_str=not_kw_str):
     global squery_parser
     parser_ebnf = r"""
-        ?q_or : q_and (ws ( {or_kw} )  ws q_and)*
-        ?q_and: q_val (ws ( {and_kw} ) ws q_val)*
+        ?q_or : q_and (_WS ( {or_kw} )  _WS q_and)*
+        ?q_and: q_val (_WS ( {and_kw} ) _WS q_val)*
         ?q_val: escaped_string
               | string
               | ( {not_kw} ) q_not 
@@ -30,7 +30,7 @@ def squery_compile_parser(or_kw_str=or_kw_str, and_kw_str=and_kw_str, not_kw_str
         q_not: q_val
         string : STRING
         escaped_string : ESCAPED_STRING
-        ws : WS
+        _WS : WS
         STRING: /\w+/
         %import common.ESCAPED_STRING
         %import common.WS
@@ -98,11 +98,11 @@ def outer_s_not(func):
 
 class SQuery_transformer(Transformer):
     def q_or(self, items):
-        #print("q_or:", items, list(filter(None, items)))
-        return outer_s_or(*list(filter(None, items)))
+        #print("q_or:", items)
+        return outer_s_or(*items)
     def q_and(self, items):
-        #print("q_and:", items, list(filter(None, items)))
-        return outer_s_and(*list(filter(None, items)))
+        #print("q_and:", items)
+        return outer_s_and(*items)
     def q_not(self, items):
         #print("q_not:", items[0])
         return outer_s_not(items[0])
@@ -112,9 +112,6 @@ class SQuery_transformer(Transformer):
     def string(self, items):
         #print("string:", items)
         return outer_s_string(items[0])
-    def ws(self, items):
-        #print("ws:", items)
-        return None
 
 #
 # Test code
