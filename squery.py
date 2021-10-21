@@ -1,8 +1,48 @@
+# squery - Copyright (c) 2021 Udi Finkelstein
 #
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 # A simple query language for searching text strings
 # it accepts any words connected by and/or and their Hebrew counterparts
 # it also honors ()'s.
 #
+# TODOs:
+#
+# 1. Performance enhancements:
+# Currently, we find() each token on the string to be searched.
+# In the future, use one of those libs that does a combined search on multiple strings:
+# https://github.com/jakerachleff/commentzwalter
+# https://github.com/abusix/ahocorapy
+# https://github.com/WojciechMula/pyahocorasick/
+# https://github.com/Guangyi-Z/py-aho-corasick
+# we would then take the search resut of each keyword and build a function
+# to combine the results into a final True/False query result.
+#
+# 2. Token location indication
+# construct an optional search function that would also return the position of tokens
+# that were found in the text so they can be visually marked for the user.
+# As this would probably impact performance we would probably have this as an option
+# using a new separate set of closures.
+
 from lark import Lark, Transformer
 import sys
 
@@ -64,12 +104,6 @@ def squery_compile(query):
     except:
         return None
 
-# In the future, use one of those:
-# https://github.com/jakerachleff/commentzwalter
-# https://github.com/abusix/ahocorapy
-# https://github.com/WojciechMula/pyahocorasick/
-# https://github.com/Guangyi-Z/py-aho-corasick
-
 def outer_s_string(s):
     def s_string(text):
         return s in text
@@ -117,6 +151,8 @@ class SQuery_transformer(Transformer):
 # Test code
 #
 if __name__ == "__main__":
+    # enable this if you wantr to localize your commands.
+    #squery_set_keywords(('"or"i', '"או"'), ('"and"i', '"וגם"'), ('"not"i', '"ללא"'))
     while True:
         print("Enter text (type 'exit' to exit):")
         text = input()
