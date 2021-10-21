@@ -108,7 +108,7 @@ status = [None] * 3
 for i in range(3):
     status[i] = sg.Text('', size=(100, 1))
 layout = [
-    [sg.Text('xlsxsearch (21-oct-2021) - Copyright 2020-2021 by Udi Finkelstein', size=(100, 1))],
+    [sg.Text('xlsxsearch (21-oct-2021, $Id$) - Copyright 2020-2021 by Udi Finkelstein', size=(100, 1))],
     [sg.Text('https://github.com/udif/xlsxsearch/', size=(100, 1))],
     [sg.Text('', size=(100, 1))],
     [sg.Text('Source Folders with XLSX files', size=(30, 1)),
