@@ -7,6 +7,8 @@ import os
 from copy import copy
 import PySimpleGUI as sg
 
+import squery
+
 col_width = []
 
 def gen_file_list(folder):
@@ -17,7 +19,7 @@ def gen_file_list(folder):
             files.append(os.fspath(i))
     return files
 
-def run_search(files, searchstring, dest_filename, fix_search, w, status):
+def run_search(files, searchstring, query_func, dest_filename, fix_search, w, status):
     status[0]('')
     status[1]('')
     status[2]('')
@@ -54,7 +56,7 @@ def run_search(files, searchstring, dest_filename, fix_search, w, status):
             found = False
             for column in range(1, max_column+1):
                 c = str(ws.cell(row=row, column=column).value)
-                if c and c.find(searchstring) >= 0:
+                if c and query_func(c):
                     found = True
                     break
             if found:
@@ -106,7 +108,7 @@ status = [None] * 3
 for i in range(3):
     status[i] = sg.Text('', size=(100, 1))
 layout = [
-    [sg.Text('xlsxsearch - Copyright 2020 by Udi Finkelstein', size=(100, 1))],
+    [sg.Text('xlsxsearch (21-oct-2021) - Copyright 2020-2021 by Udi Finkelstein', size=(100, 1))],
     [sg.Text('https://github.com/udif/xlsxsearch/', size=(100, 1))],
     [sg.Text('', size=(100, 1))],
     [sg.Text('Source Folders with XLSX files', size=(30, 1)),
@@ -115,7 +117,7 @@ layout = [
     [sg.Text('Destination for search result XLSX files', size=(30, 1)),
      sg.InputText(key='-DFOLDER-', size=(100, 1),
                   default_text = dfb.InitialFolder), dfb],
-    [sg.Text('Search keyword', size=(30, 1)), sg.InputText('', size=(100, 1), key='-KEYWORD-')],
+    [sg.Text('Search query', size=(30, 1)), sg.InputText('', size=(100, 1), key='-QUERY-')],
     [sg.Checkbox('Mark results with __XX__', key='-CB-', size=(20,1), default=True)],
     [sg.Text('', size=(100, 1))],
     [sg.Submit()],
@@ -139,10 +141,11 @@ while True:
         sfolder = values["-SFOLDER-"]
         dfolder = values["-DFOLDER-"]
         file_list = gen_file_list(sfolder)
-        searchstring = values["-KEYWORD-"]
+        searchstring = values["-QUERY-"]
+        query_func = squery.squery_compile(searchstring)
         dest_file = os.fspath(Path(dfolder).joinpath("xlsxsearch_" + searchstring + ".xlsx"))
         try:
-            run_search(file_list, searchstring, dest_file, fix_search, w, status)
+            run_search(file_list, searchstring, query_func, dest_file, fix_search, w, status)
         except OSError as err:
             status[2]('OS Error: {}'.format(err))
             w.Refresh()
