@@ -61,8 +61,8 @@ squery_parser = None
 def squery_compile_parser(or_kw_str=or_kw_str, and_kw_str=and_kw_str, not_kw_str=not_kw_str):
     global squery_parser
     parser_ebnf = r"""
-        ?q_or : q_and (_WS ( {or_kw} )  _WS q_and)*
-        ?q_and: q_val (_WS ( {and_kw} ) _WS q_val)*
+        ?q_or : q_and (({or_kw})  q_and)*
+        ?q_and: q_val (({and_kw}) q_val)*
         ?q_val: escaped_string
               | string
               | ( {not_kw} ) q_not 
@@ -70,7 +70,6 @@ def squery_compile_parser(or_kw_str=or_kw_str, and_kw_str=and_kw_str, not_kw_str
         q_not: q_val
         string : STRING
         escaped_string : ESCAPED_STRING
-        _WS : WS
         STRING: /\w+/
         %import common.ESCAPED_STRING
         %import common.WS
@@ -78,7 +77,7 @@ def squery_compile_parser(or_kw_str=or_kw_str, and_kw_str=and_kw_str, not_kw_str
 
     """.format(or_kw=or_kw_str, and_kw=and_kw_str, not_kw=not_kw_str)
     #print(parser_ebnf)
-    squery_parser = Lark(parser_ebnf, start='q_or')
+    squery_parser = Lark(parser_ebnf, parser="lalr", start='q_or', lexer='standard')
 
 # if you want to translate and/or to a different language
 def squery_set_keywords(or_kw, and_kw, not_kw):
