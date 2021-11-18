@@ -109,18 +109,12 @@ def outer_s_string(s):
 
 def outer_s_and(*f):
     def s_and(text):
-        for func in f:
-            if not func(text):
-                return False
-        return True
+        return all(f)
     return s_and
 
 def outer_s_or(*f):
     def s_or(text):
-        for func in f:
-            if func(text):
-                return True
-        return False
+        return any(f)
     return s_or
 
 def outer_s_not(func):
