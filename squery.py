@@ -47,18 +47,15 @@ from lark import Lark, Transformer
 import sys
 
 or_keywords = ('"or"i', '"או"')
-and_keywords = ('"and"i', '"וגם"')
+and_keywords = ('"and"i', '', '"וגם"')
 not_keywords = ('"not"i', '"ללא"')
 
-or_kw_str = ""
-and_kw_str = ""
-not_kw_str = ""
 squery_parser = None
 
 #
 # Call this if you want to localize your and/or keywords
 #
-def squery_compile_parser(or_kw_str=or_kw_str, and_kw_str=and_kw_str, not_kw_str=not_kw_str):
+def squery_compile_parser(or_kw, and_kw, not_kw):
     global squery_parser
     parser_ebnf = r"""
         ?q_or : q_and (({or_kw})  q_and)*
@@ -74,18 +71,20 @@ def squery_compile_parser(or_kw_str=or_kw_str, and_kw_str=and_kw_str, not_kw_str
         %import common.ESCAPED_STRING
         %import common.WS
         %ignore WS
-
-    """.format(or_kw=or_kw_str, and_kw=and_kw_str, not_kw=not_kw_str)
+    """.format(or_kw=' | '.join(or_kw), and_kw=' | '.join(and_kw), not_kw=' | '.join(not_kw))
     #print(parser_ebnf)
     squery_parser = Lark(parser_ebnf, parser="lalr", start='q_or', lexer='standard')
 
 # if you want to translate and/or to a different language
 def squery_set_keywords(or_kw, and_kw, not_kw):
-    global or_kw_str, and_kw_str
-    or_kw_str = ' | '.join(or_kw)
-    and_kw_str = ' | '.join(and_kw)
-    not_kw_str = ' | '.join(not_kw)
-    squery_compile_parser(or_kw_str, and_kw_str, not_kw_str)
+    global or_keywords, and_keywords, not_keywords
+    (or_keywords, and_keywords, not_keywords) = (or_kw, and_kw, not_kw)
+    squery_compile_parser(or_kw, and_kw, not_kw)
+
+# if you want to translate and/or to a different language
+def squery_get_keywords():
+    global or_keywords, and_keywords, not_keywords
+    return ((or_keywords, and_keywords, not_keywords))
 
 # set default keywords
 squery_set_keywords(or_keywords, and_keywords, not_keywords)
