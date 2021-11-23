@@ -7,7 +7,9 @@ Notes
 -----
 * It is assumed that the Excel files have a header line, which is copied from the 1st Excel file encountered.  
 * Column width is calculated per-column based on the widest column in all the Excel files that matched.  
-* Since the library used to read Excel files, openpyxl, does not support multiple formats within each cell (rich text), I have added an option to surround the string match with two underscores on each side (\_\_matchstring\_\_). At the moment this only applies to single word searches.
+* Optionally mark search keywords in the result with bold text style.  
+  Until openpyxl 3.1 is released, This feature requires the topic/3.1/rich-text-cells branch of openpyxl.  
+  If only 3.0.9 is available, the program will gracefully disable this feature.
 * The search results are stored in a unique Excel file whose name is of the form xlsxsearch_<searchpattern>.xlsx  
 * The main screen allows choosing the top level directory for the Excel files, and a separate result directory. The result directory can reside under the search directory, as the program ignores all Excel files named xslsxsearch_*.xlsx .  
 
@@ -32,10 +34,27 @@ Query examples:
  
 Installing
 ----------
+### openpyxl
+If you want to install the bleeding-edge 3.1 branch of openpyxl, please dop the following:
+1. Install Mercurial (hg)
+2. Execute the following sequence:
+```
+hg clone https://foss.heptapod.net/openpyxl/openpyxl
+cd openpyxl
+hg checkout 3.1:rich-text-cells
+python setup.py install
+```
+If you did not install `openpyxl` from the Mercurial repository above, and prefer to use the latest 3.0.9 released version, do the following instead:
+```
+openpyxl 
+```
+
+### required python libs
 Assuming you have Python 3.x installed (I worked with 3.8.5), you should do:  
 
-    pip install openpyxl pathlib pyinstaller pysimplegui lark
-
+```
+pip install pathlib pyinstaller pysimplegui lark
+```
 Running
 -------
 
