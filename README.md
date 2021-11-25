@@ -64,7 +64,37 @@ As simple as that.
 
 Building a single executable files for users
 --------------------------------------------
-    pyinstaller --onefile xlsxsearch.py
+### Using `pyinstaller`
+`Pyinstaller` will pack a complete python interpreter and all the required imports into one executable, so that distributing your program will not require anything other than the EXE file itself.
+```
+pip install pyinstaller
+pyinstaller --onefile xlsxsearch.py
+```
+If you have `matplotlib` install, please uninstall it before running `pyinstaller` above. You can reinstall it later:
+```
+pip uninstall matplotlib
+pip install pyinstaller
+pyinstaller --onefile xlsxsearch.py
+pip install matplotlib
+```
+This is a known `pyinstaller` issue with various workarounds, not all of them working. It is supposed to be solve in 5.0, not released yet.
+
+### Using `Nuitka`
+(This is Work In Progress, still no working executables)
+
+`Nuitka` is a tool that converts your python code into C, and compiles that to build a standalone executable.
+
+To use `nuitka` you must have a recent version of gcc, or let `nuitka` install one for you as you run it.
+If you want to use an existing copy of `gcc`  such as the one from an existing MinGW install, just do:
+```
+for /f "tokens=*" %A in ('where gcc') do (set CC=%A)
+```
+If you don't have a suitable copy of `gcc`, then `Nuitka` will install one for you.
+```
+pip install nuitka
+python -m nuitka --standalone --onefile --python-flag=no_site xlsxsearch.py
+```
+When this is done, you will get a standalone `xlsxsearch.exe` file.
 
 ### Windows tip:
 Do not use Python3 from the Microsoft store. It has many issues with file access permissions that prevented me from running pyinstaller with the --onefile flag. I ended up removing it and installing python3 from python.org
